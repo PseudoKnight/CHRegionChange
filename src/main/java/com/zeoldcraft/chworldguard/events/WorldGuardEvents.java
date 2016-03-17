@@ -1,12 +1,13 @@
 package com.zeoldcraft.chworldguard.events;
 
-import java.util.Map;
-
 import com.laytonsmith.PureUtilities.Version;
 import com.laytonsmith.annotations.api;
 import com.laytonsmith.core.CHVersion;
 import com.laytonsmith.core.ObjectGenerator;
-import com.laytonsmith.core.constructs.*;
+import com.laytonsmith.core.constructs.CArray;
+import com.laytonsmith.core.constructs.CString;
+import com.laytonsmith.core.constructs.Construct;
+import com.laytonsmith.core.constructs.Target;
 import com.laytonsmith.core.events.AbstractEvent;
 import com.laytonsmith.core.events.BindableEvent;
 import com.laytonsmith.core.events.Driver;
@@ -14,13 +15,16 @@ import com.laytonsmith.core.exceptions.EventException;
 import com.laytonsmith.core.exceptions.PrefilterNonMatchException;
 import com.zeoldcraft.chworldguard.abstraction.events.WGRegionChangeEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class WorldGuardEvents {
 	
 	@api
 	public static class region_change extends AbstractEvent {
 
 		@Override
-		public BindableEvent convert(CArray arg0, Target t ) {
+		public BindableEvent convert(CArray arg, Target t) {
 			throw new UnsupportedOperationException("This is not supported at this time.");
 		}
 
@@ -42,22 +46,14 @@ public class WorldGuardEvents {
 		@Override
 		public Map<String, Construct> evaluate(BindableEvent event) throws EventException {
 			if (event instanceof WGRegionChangeEvent) {
-				Target t = Target.UNKNOWN;
 				WGRegionChangeEvent e = (WGRegionChangeEvent) event;
-				Map<String, Construct> ret = evaluate_helper(e);
+				Target t = Target.UNKNOWN;
+				Map<String, Construct> ret = new HashMap<>();
 				ret.put("player", new CString(e.getPlayer().getName(), t));
 				ret.put("from", ObjectGenerator.GetGenerator().location(e.getFrom()));
 				ret.put("to", ObjectGenerator.GetGenerator().location(e.getTo()));
-				CArray fn = new CArray(t);
-				CArray tn = new CArray(t);
-				for (String id : e.getFromRegions()) {
-					fn.push(new CString(id, t));
-				}
-				for (String id : e.getToRegions()) {
-					tn.push(new CString(id, t));
-				}
-				ret.put("fromRegions", fn);
-				ret.put("toRegions", tn);
+				ret.put("fromRegions", e.getFromRegions(t));
+				ret.put("toRegions", e.getToRegions(t));
 				return ret;
 			} else {
 				throw new EventException("Not a proper region change event.");
@@ -71,10 +67,7 @@ public class WorldGuardEvents {
 
 		@Override
 		public boolean matches(Map<String, Construct> prefilter, BindableEvent event) throws PrefilterNonMatchException {
-			if (event instanceof WGRegionChangeEvent) {
-				return true;
-			}
-			return false;
+			return event instanceof WGRegionChangeEvent;
 		}
 
 		@Override

@@ -5,6 +5,7 @@ import com.laytonsmith.PureUtilities.Version;
 import com.laytonsmith.commandhelper.CommandHelperPlugin;
 import com.laytonsmith.core.extensions.AbstractExtension;
 import com.laytonsmith.core.extensions.MSExtension;
+import com.zeoldcraft.chworldguard.abstraction.events.bukkit.CHWorldGuardListener;
 
 @MSExtension("CHWorldGuard")
 public class CHWorldGuard extends AbstractExtension {
@@ -12,7 +13,7 @@ public class CHWorldGuard extends AbstractExtension {
 	private static CHWorldGuardListener dl;
 
 	public Version getVersion() {
-		return new SimpleVersion(1,0,1);
+		return new SimpleVersion(1,1,0);
 	}
 
 	@Override
