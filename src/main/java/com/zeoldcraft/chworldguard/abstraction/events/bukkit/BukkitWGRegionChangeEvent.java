@@ -7,7 +7,6 @@ import com.laytonsmith.abstraction.bukkit.entities.BukkitMCPlayer;
 import com.laytonsmith.core.constructs.CArray;
 import com.laytonsmith.core.constructs.CString;
 import com.laytonsmith.core.constructs.Target;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeoldcraft.chworldguard.abstraction.events.WGRegionChangeEvent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -15,19 +14,19 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import java.util.Set;
+import java.util.List;
 
 public class BukkitWGRegionChangeEvent extends Event implements WGRegionChangeEvent, Cancellable {
 
 	Player player;
 	Location to;
 	Location from;
-	Set<ProtectedRegion> toRegions;
-	Set<ProtectedRegion> fromRegions;
+	List<String> toRegions;
+	List<String> fromRegions;
 	boolean cancelled = false;
 	private static final HandlerList handlers = new HandlerList();
 
-	public BukkitWGRegionChangeEvent(Player pl, Set<ProtectedRegion> fromNames, Set<ProtectedRegion> toNames, Location f, Location t) {
+	public BukkitWGRegionChangeEvent(Player pl, List<String> fromNames, List<String> toNames, Location f, Location t) {
 		player = pl;
 		toRegions = toNames;
 		fromRegions = fromNames;
@@ -53,8 +52,8 @@ public class BukkitWGRegionChangeEvent extends Event implements WGRegionChangeEv
 	@Override
 	public CArray getFromRegions(Target t) {
 		CArray fromNames = new CArray(t);
-		for (ProtectedRegion reg : fromRegions) {
-			fromNames.push(new CString(reg.getId(), t), t);
+		for (String reg : fromRegions) {
+			fromNames.push(new CString(reg, t), t);
 		}
 		return fromNames;
 	}
@@ -62,8 +61,8 @@ public class BukkitWGRegionChangeEvent extends Event implements WGRegionChangeEv
 	@Override
 	public CArray getToRegions(Target t) {
 		CArray toNames = new CArray(t);
-		for (ProtectedRegion reg : toRegions) {
-			toNames.push(new CString(reg.getId(), t), t);
+		for (String reg : toRegions) {
+			toNames.push(new CString(reg, t), t);
 		}
 		return toNames;
 	}

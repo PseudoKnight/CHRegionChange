@@ -3,10 +3,9 @@ package com.zeoldcraft.chworldguard.abstraction.events.bukkit;
 import com.laytonsmith.commandhelper.CommandHelperPlugin;
 import com.laytonsmith.core.events.Driver;
 import com.laytonsmith.core.events.EventUtils;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldguard.bukkit.WGBukkit;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
@@ -19,7 +18,7 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.util.Vector;
 
-import java.util.Set;
+import java.util.List;
 
 public class CHWorldGuardListener implements Listener {
 
@@ -77,15 +76,12 @@ public class CHWorldGuardListener implements Listener {
 		}
 	}
 
-	private boolean testRegionChange(Player player, Location from, Location to) {
-		// As WG does, check if they are even in a different block
+	private static boolean testRegionChange(Player player, Location from, Location to){
 		if(from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ()){
-			World fromworld = from.getWorld();
-			World toWorld = to.getWorld();
-			Set<ProtectedRegion> fromSet = WGBukkit.getRegionManager(fromworld).getApplicableRegions(from).getRegions();
-			Set<ProtectedRegion> toSet = WGBukkit.getRegionManager(toWorld).getApplicableRegions(to).getRegions();
-			if(fromSet.size() != toSet.size() && fromSet.hashCode() != toSet.hashCode()){
-				BukkitWGRegionChangeEvent rgchange = new BukkitWGRegionChangeEvent(player, fromSet, toSet, from, to);
+			List<String> fromList = WGBukkit.getRegionManager(from.getWorld()).getApplicableRegionsIDs((BukkitUtil.toVector(from).floor()));
+			List<String> toList = WGBukkit.getRegionManager(to.getWorld()).getApplicableRegionsIDs((BukkitUtil.toVector(to).floor()));
+			if(regionsChanged(fromList, toList)){
+				BukkitWGRegionChangeEvent rgchange = new BukkitWGRegionChangeEvent(player, fromList, toList, from, to);
 				EventUtils.TriggerListener(Driver.EXTENSION, "region_change", rgchange);
 				if(rgchange.isCancelled()) {
 					return true;
@@ -93,5 +89,17 @@ public class CHWorldGuardListener implements Listener {
 			}
 		}
 		return false;
+	}
+
+	private static boolean regionsChanged(List<String> from, List<String> to){
+		if(from.size() != to.size()){
+			return(true);
+		}
+		for(String id : from){
+			if(!to.contains(id)){
+				return(true);
+			}
+		}
+		return(false);
 	}
 }
