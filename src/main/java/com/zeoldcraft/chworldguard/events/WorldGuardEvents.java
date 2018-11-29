@@ -2,17 +2,17 @@ package com.zeoldcraft.chworldguard.events;
 
 import com.laytonsmith.PureUtilities.Version;
 import com.laytonsmith.annotations.api;
-import com.laytonsmith.core.CHVersion;
+import com.laytonsmith.core.MSVersion;
 import com.laytonsmith.core.ObjectGenerator;
 import com.laytonsmith.core.constructs.CArray;
 import com.laytonsmith.core.constructs.CString;
-import com.laytonsmith.core.constructs.Construct;
 import com.laytonsmith.core.constructs.Target;
 import com.laytonsmith.core.events.AbstractEvent;
 import com.laytonsmith.core.events.BindableEvent;
 import com.laytonsmith.core.events.Driver;
 import com.laytonsmith.core.exceptions.EventException;
 import com.laytonsmith.core.exceptions.PrefilterNonMatchException;
+import com.laytonsmith.core.natives.interfaces.Mixed;
 import com.zeoldcraft.chworldguard.abstraction.events.WGRegionChangeEvent;
 
 import java.util.HashMap;
@@ -44,11 +44,11 @@ public class WorldGuardEvents {
 		}
 
 		@Override
-		public Map<String, Construct> evaluate(BindableEvent event) throws EventException {
+		public Map<String, Mixed> evaluate(BindableEvent event) throws EventException {
 			if (event instanceof WGRegionChangeEvent) {
 				WGRegionChangeEvent e = (WGRegionChangeEvent) event;
 				Target t = Target.UNKNOWN;
-				Map<String, Construct> ret = new HashMap<>();
+				Map<String, Mixed> ret = new HashMap<>();
 				ret.put("player", new CString(e.getPlayer().getName(), t));
 				ret.put("from", ObjectGenerator.GetGenerator().location(e.getFrom()));
 				ret.put("to", ObjectGenerator.GetGenerator().location(e.getTo()));
@@ -66,18 +66,18 @@ public class WorldGuardEvents {
 		}
 
 		@Override
-		public boolean matches(Map<String, Construct> prefilter, BindableEvent event) throws PrefilterNonMatchException {
+		public boolean matches(Map<String, Mixed> prefilter, BindableEvent event) throws PrefilterNonMatchException {
 			return event instanceof WGRegionChangeEvent;
 		}
 
 		@Override
-		public boolean modifyEvent(String key, Construct value, BindableEvent event) {
+		public boolean modifyEvent(String key, Mixed value, BindableEvent event) {
 			return false;
 		}
 
 		@Override
 		public Version since() {
-			return CHVersion.V3_3_1;
+			return MSVersion.V3_3_1;
 		}
 	}
 }

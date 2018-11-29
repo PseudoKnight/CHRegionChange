@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.zeoldcraft</groupId>
 	<artifactId>CHWorldGuard</artifactId>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 	<name>CHWorldGuard</name>
 	<description>Provides a region_change event.</description>
 	<properties>
@@ -76,7 +76,7 @@
 		<dependency>
 			<groupId>com.sk89q</groupId>
 			<artifactId>commandhelper</artifactId>
-			<version>3.3.3-SNAPSHOT</version>
+			<version>3.3.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sk89q.worldguard</groupId>

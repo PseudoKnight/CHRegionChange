@@ -13,7 +13,7 @@ public class CHWorldGuard extends AbstractExtension {
 	private static CHWorldGuardListener dl;
 
 	public Version getVersion() {
-		return new SimpleVersion(1,1,1);
+		return new SimpleVersion(1,1,2);
 	}
 
 	@Override
