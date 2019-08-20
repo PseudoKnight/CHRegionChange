@@ -68,8 +68,12 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>sk89q-mvn2</id>
-			<url>http://maven.sk89q.com/repo/</url>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>enginehub-repo</id>
+			<url>http://maven.enginehub.org/repo/</url>
 		</repository>
 	</repositories>
 	<dependencies>
