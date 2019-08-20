@@ -1,6 +1,10 @@
-package com.zeoldcraft.chworldguard.events;
+package me.pseudoknight.chregionchange;
 
 import com.laytonsmith.PureUtilities.Version;
+import com.laytonsmith.abstraction.MCLocation;
+import com.laytonsmith.abstraction.MCPlayer;
+import com.laytonsmith.abstraction.bukkit.BukkitMCLocation;
+import com.laytonsmith.abstraction.bukkit.entities.BukkitMCPlayer;
 import com.laytonsmith.annotations.api;
 import com.laytonsmith.core.MSVersion;
 import com.laytonsmith.core.ObjectGenerator;
@@ -13,12 +17,89 @@ import com.laytonsmith.core.events.Driver;
 import com.laytonsmith.core.exceptions.EventException;
 import com.laytonsmith.core.exceptions.PrefilterNonMatchException;
 import com.laytonsmith.core.natives.interfaces.Mixed;
-import com.zeoldcraft.chworldguard.abstraction.events.WGRegionChangeEvent;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-public class WorldGuardEvents {
+public interface RegionChangeEvent extends BindableEvent {
+	MCPlayer getPlayer();
+	MCLocation getFrom();
+	MCLocation getTo();
+	CArray getFromRegions(Target t);
+	CArray getToRegions(Target t);
+	boolean isCancelled();
+	void setCancelled(boolean cancelled);
+
+	public class RegionChangeEventImpl implements RegionChangeEvent, Cancellable {
+
+		private Player player;
+		private Location to;
+		private Location from;
+		private Set<ProtectedRegion> toRegions;
+		private Set<ProtectedRegion> fromRegions;
+		private boolean cancelled = false;
+
+		public RegionChangeEventImpl(Player pl, Set<ProtectedRegion> fromSet, Set<ProtectedRegion> toSet, Location f, Location t) {
+			player = pl;
+			toRegions = toSet;
+			fromRegions = fromSet;
+			from = f;
+			to = t;
+		}
+
+		@Override
+		public Object _GetObject() {
+			return this;
+		}
+
+		@Override
+		public MCLocation getFrom() {
+			return new BukkitMCLocation(from);
+		}
+
+		@Override
+		public MCLocation getTo() {
+			return new BukkitMCLocation(to);
+		}
+
+		@Override
+		public CArray getFromRegions(Target t) {
+			CArray fromNames = new CArray(t);
+			for (ProtectedRegion reg : fromRegions) {
+				fromNames.push(new CString(reg.getId(), t), t);
+			}
+			return fromNames;
+		}
+
+		@Override
+		public CArray getToRegions(Target t) {
+			CArray toNames = new CArray(t);
+			for (ProtectedRegion reg : toRegions) {
+				toNames.push(new CString(reg.getId(), t), t);
+			}
+			return toNames;
+		}
+
+		@Override
+		public boolean isCancelled() {
+			return cancelled;
+		}
+
+		@Override
+		public void setCancelled(boolean cancel) {
+			cancelled = cancel;
+		}
+
+		@Override
+		public MCPlayer getPlayer() {
+			return new BukkitMCPlayer(player);
+		}
+	}
 	
 	@api
 	public static class region_change extends AbstractEvent {
@@ -45,8 +126,8 @@ public class WorldGuardEvents {
 
 		@Override
 		public Map<String, Mixed> evaluate(BindableEvent event) throws EventException {
-			if (event instanceof WGRegionChangeEvent) {
-				WGRegionChangeEvent e = (WGRegionChangeEvent) event;
+			if (event instanceof RegionChangeEventImpl) {
+				RegionChangeEventImpl e = (RegionChangeEventImpl) event;
 				Target t = Target.UNKNOWN;
 				Map<String, Mixed> ret = new HashMap<>();
 				ret.put("player", new CString(e.getPlayer().getName(), t));
@@ -67,7 +148,7 @@ public class WorldGuardEvents {
 
 		@Override
 		public boolean matches(Map<String, Mixed> prefilter, BindableEvent event) throws PrefilterNonMatchException {
-			return event instanceof WGRegionChangeEvent;
+			return event instanceof RegionChangeEventImpl;
 		}
 
 		@Override
