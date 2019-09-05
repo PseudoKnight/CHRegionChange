@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.zeoldcraft</groupId>
 	<artifactId>CHRegionChange</artifactId>
-	<version>2.0.0</version>
+	<version>2.0.1</version>
 	<name>CHRegionChange</name>
 	<description>Provides a region_change event for CommandHelper using WorldGuard.</description>
 	<properties>

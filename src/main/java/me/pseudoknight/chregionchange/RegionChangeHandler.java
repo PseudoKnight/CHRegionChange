@@ -1,27 +1,48 @@
 package me.pseudoknight.chregionchange;
 
+import com.laytonsmith.commandhelper.CommandHelperPlugin;
+import com.laytonsmith.core.Static;
 import com.laytonsmith.core.events.Driver;
 import com.laytonsmith.core.events.EventUtils;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.Handler;
+import org.bukkit.Bukkit;
 
 import java.util.Set;
+import java.util.logging.Level;
 
 public class RegionChangeHandler extends Handler {
-	public static final RegionChangeHandler.Factory FACTORY = new RegionChangeHandler.Factory();
+
+	private static boolean registered = false;
+
+	static void Register() {
+		if(!registered) {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(CommandHelperPlugin.self, () -> {
+				try {
+					WorldGuardPlatform wg = WorldGuard.getInstance().getPlatform();
+					registered = wg.getSessionManager().registerHandler(new RegionChangeHandler.Factory(), null);
+				} catch (NullPointerException ex) {
+					Static.getLogger().log(Level.SEVERE, "Failed to register WorldGuard handler. WG hasn't enabled yet?");
+				}
+			});
+		}
+	}
+
 	public static class Factory extends Handler.Factory<RegionChangeHandler> {
 		@Override
 		public RegionChangeHandler create(Session session) {
 			return new RegionChangeHandler(session);
 		}
 	}
-	
+
 	public RegionChangeHandler(Session session) {
 		super(session);
 	}
