@@ -1,5 +1,6 @@
 package me.pseudoknight.chregionchange;
 
+import com.laytonsmith.PureUtilities.Common.StringUtils;
 import com.laytonsmith.PureUtilities.Version;
 import com.laytonsmith.abstraction.MCLocation;
 import com.laytonsmith.abstraction.MCPlayer;
@@ -22,6 +23,7 @@ import com.laytonsmith.core.exceptions.EventException;
 import com.laytonsmith.core.exceptions.PrefilterNonMatchException;
 import com.laytonsmith.core.natives.interfaces.Mixed;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.session.MoveType;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -31,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface RegionChangeEvent extends BindableEvent {
+	MoveType getMoveType();
 	MCPlayer getPlayer();
 	MCLocation getFrom();
 	MCLocation getTo();
@@ -41,14 +44,16 @@ public interface RegionChangeEvent extends BindableEvent {
 
 	public class RegionChangeEventImpl implements RegionChangeEvent, Cancellable {
 
-		private Player player;
-		private Location to;
-		private Location from;
-		private Set<ProtectedRegion> toRegions;
-		private Set<ProtectedRegion> fromRegions;
+		private final MoveType moveType;
+		private final Player player;
+		private final Location to;
+		private final Location from;
+		private final Set<ProtectedRegion> toRegions;
+		private final Set<ProtectedRegion> fromRegions;
 		private boolean cancelled = false;
 
-		public RegionChangeEventImpl(Player pl, Set<ProtectedRegion> fromSet, Set<ProtectedRegion> toSet, Location f, Location t) {
+		public RegionChangeEventImpl(Player pl, Set<ProtectedRegion> fromSet, Set<ProtectedRegion> toSet, Location f, Location t, MoveType mt) {
+			moveType = mt;
 			player = pl;
 			toRegions = toSet;
 			fromRegions = fromSet;
@@ -103,6 +108,12 @@ public interface RegionChangeEvent extends BindableEvent {
 		public MCPlayer getPlayer() {
 			return new BukkitMCPlayer(player);
 		}
+		
+		@Override
+		public MoveType getMoveType() {
+			return moveType;
+		}
+		
 	}
 	
 	@api
@@ -118,7 +129,8 @@ public interface RegionChangeEvent extends BindableEvent {
 			return "{}"
 					+ " Fires when a player moves to a block with a different region set than they are currently in."
 					+ " {player | from: locationArray | to: locationArray | fromRegions: array of regions at the block"
-					+ " they are coming from | toRegions: array of regions at the block they are moving to}"
+					+ " they are coming from | toRegions: array of regions at the block they are moving to"
+					+ " | type: The type of event that triggered this. Can be " + StringUtils.Join(MoveType.values(), ", ", ", or ") + "}"
 					+ " {}"
 					+ " {}";
 		}
@@ -139,6 +151,7 @@ public interface RegionChangeEvent extends BindableEvent {
 				ret.put("to", ObjectGenerator.GetGenerator().location(e.getTo()));
 				ret.put("fromRegions", e.getFromRegions(t));
 				ret.put("toRegions", e.getToRegions(t));
+				ret.put("type", new CString(e.getMoveType().name(), t));
 				return ret;
 			} else {
 				throw new EventException("Not a proper region change event.");
