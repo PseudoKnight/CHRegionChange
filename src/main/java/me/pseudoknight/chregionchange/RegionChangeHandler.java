@@ -13,6 +13,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
+import com.sk89q.worldguard.session.handler.ExitFlag;
 import com.sk89q.worldguard.session.handler.Handler;
 import org.bukkit.Bukkit;
 
@@ -28,7 +29,7 @@ public class RegionChangeHandler extends Handler {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(CommandHelperPlugin.self, () -> {
 				try {
 					WorldGuardPlatform wg = WorldGuard.getInstance().getPlatform();
-					registered = wg.getSessionManager().registerHandler(new RegionChangeHandler.Factory(), null);
+					registered = wg.getSessionManager().registerHandler(new RegionChangeHandler.Factory(), ExitFlag.FACTORY);
 				} catch (NullPointerException ex) {
 					Static.getLogger().log(Level.SEVERE, "Failed to register WorldGuard handler. WG hasn't enabled yet?");
 				}
