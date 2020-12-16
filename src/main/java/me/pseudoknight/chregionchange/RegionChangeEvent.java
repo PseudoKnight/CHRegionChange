@@ -5,14 +5,18 @@ import com.laytonsmith.abstraction.MCLocation;
 import com.laytonsmith.abstraction.MCPlayer;
 import com.laytonsmith.abstraction.bukkit.BukkitMCLocation;
 import com.laytonsmith.abstraction.bukkit.entities.BukkitMCPlayer;
+import com.laytonsmith.abstraction.events.MCPlayerRespawnEvent;
 import com.laytonsmith.annotations.api;
 import com.laytonsmith.core.MSVersion;
 import com.laytonsmith.core.ObjectGenerator;
+import com.laytonsmith.core.Static;
 import com.laytonsmith.core.constructs.CArray;
 import com.laytonsmith.core.constructs.CString;
 import com.laytonsmith.core.constructs.Target;
+import com.laytonsmith.core.environments.Environment;
 import com.laytonsmith.core.events.AbstractEvent;
 import com.laytonsmith.core.events.BindableEvent;
+import com.laytonsmith.core.events.BoundEvent;
 import com.laytonsmith.core.events.Driver;
 import com.laytonsmith.core.exceptions.EventException;
 import com.laytonsmith.core.exceptions.PrefilterNonMatchException;
@@ -159,6 +163,23 @@ public interface RegionChangeEvent extends BindableEvent {
 		@Override
 		public Version since() {
 			return MSVersion.V3_3_1;
+		}
+
+		@Override
+		public void preExecution(Environment env, BoundEvent.ActiveEvent activeEvent) {
+			if(activeEvent.getUnderlyingEvent() instanceof RegionChangeEventImpl) {
+				// sometimes the players is not online here, perhaps during certain events that trigger this
+				MCPlayer player = ((RegionChangeEventImpl) activeEvent.getUnderlyingEvent()).getPlayer();
+				Static.InjectPlayer(player);
+			}
+		}
+
+		@Override
+		public void postExecution(Environment env, BoundEvent.ActiveEvent activeEvent) {
+			if(activeEvent.getUnderlyingEvent() instanceof RegionChangeEventImpl) {
+				MCPlayer player = ((RegionChangeEventImpl) activeEvent.getUnderlyingEvent()).getPlayer();
+				Static.UninjectPlayer(player);
+			}
 		}
 	}
 }
