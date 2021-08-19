@@ -2,8 +2,11 @@ package me.pseudoknight.chregionchange;
 
 import com.laytonsmith.PureUtilities.SimpleVersion;
 import com.laytonsmith.PureUtilities.Version;
+import com.laytonsmith.core.Static;
 import com.laytonsmith.core.extensions.AbstractExtension;
 import com.laytonsmith.core.extensions.MSExtension;
+
+import java.util.logging.Level;
 
 @MSExtension("CHRegionChange")
 public class CHRegionChange extends AbstractExtension {
@@ -15,11 +18,11 @@ public class CHRegionChange extends AbstractExtension {
 	@Override
 	public void onStartup() {
 		RegionChangeHandler.Register();
-		System.out.println("CHRegionChange " + getVersion() + " loaded.");
+		Static.getLogger().log(Level.INFO, "CHRegionChange " + getVersion() + " loaded.");
 	}
 
 	@Override
 	public void onShutdown() {
-		System.out.println("CHRegionChange " + getVersion() + " unloaded.");
+		Static.getLogger().log(Level.INFO, "CHRegionChange " + getVersion() + " unloaded.");
 	}
 }
