@@ -12,7 +12,7 @@ import java.util.logging.Level;
 public class CHRegionChange extends AbstractExtension {
 
 	public Version getVersion() {
-		return new SimpleVersion(2,1,0);
+		return new SimpleVersion(2,1,1);
 	}
 
 	@Override

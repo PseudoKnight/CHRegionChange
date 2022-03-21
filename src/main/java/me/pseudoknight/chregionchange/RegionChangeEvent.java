@@ -130,7 +130,8 @@ public interface RegionChangeEvent extends BindableEvent {
 					+ " Fires when a player moves to a block with a different region set than they are currently in."
 					+ " {player | from: locationArray | to: locationArray | fromRegions: array of regions at the block"
 					+ " they are coming from | toRegions: array of regions at the block they are moving to"
-					+ " | type: The type of event that triggered this. Can be " + StringUtils.Join(MoveType.values(), ", ", ", or ") + "}"
+					+ " | type: The type of event that triggered this. Can be RESPAWN, EMBARK, MOVE, GLIDE, SWIM,"
+					+ " TELEPORT, RIDE, OTHER_NON_CANCELLABLE, or OTHER_CANCELLABLE.}"
 					+ " {}"
 					+ " {}";
 		}
