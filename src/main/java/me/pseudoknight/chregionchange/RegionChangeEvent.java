@@ -1,12 +1,10 @@
 package me.pseudoknight.chregionchange;
 
-import com.laytonsmith.PureUtilities.Common.StringUtils;
 import com.laytonsmith.PureUtilities.Version;
 import com.laytonsmith.abstraction.MCLocation;
 import com.laytonsmith.abstraction.MCPlayer;
 import com.laytonsmith.abstraction.bukkit.BukkitMCLocation;
 import com.laytonsmith.abstraction.bukkit.entities.BukkitMCPlayer;
-import com.laytonsmith.abstraction.events.MCPlayerRespawnEvent;
 import com.laytonsmith.annotations.api;
 import com.laytonsmith.core.MSVersion;
 import com.laytonsmith.core.ObjectGenerator;
@@ -128,10 +126,10 @@ public interface RegionChangeEvent extends BindableEvent {
 		public String docs() {
 			return "{}"
 					+ " Fires when a player moves to a block with a different region set than they are currently in."
-					+ " {player | from: locationArray | to: locationArray | fromRegions: array of regions at the block"
-					+ " they are coming from | toRegions: array of regions at the block they are moving to"
-					+ " | type: The type of event that triggered this. Can be RESPAWN, EMBARK, MOVE, GLIDE, SWIM,"
-					+ " TELEPORT, RIDE, OTHER_NON_CANCELLABLE, or OTHER_CANCELLABLE.}"
+					+ " {player | from: locationArray | to: locationArray | fromRegions:  An array that may contain"
+					+ " regions the player is leaving | toRegions: An array that may contain regions the player is"
+					+ " entering | type: The type of event that triggered this. (RESPAWN, EMBARK, MOVE, GLIDE,"
+					+ " SWIM, TELEPORT, RIDE, OTHER_NON_CANCELLABLE, or OTHER_CANCELLABLE)}"
 					+ " {}"
 					+ " {}";
 		}
@@ -182,7 +180,7 @@ public interface RegionChangeEvent extends BindableEvent {
 		@Override
 		public void preExecution(Environment env, BoundEvent.ActiveEvent activeEvent) {
 			if(activeEvent.getUnderlyingEvent() instanceof RegionChangeEventImpl) {
-				// sometimes the players is not online here, perhaps during certain events that trigger this
+				// sometimes the player is not online here (e.g. respawn events)
 				MCPlayer player = ((RegionChangeEventImpl) activeEvent.getUnderlyingEvent()).getPlayer();
 				Static.InjectPlayer(player);
 			}
