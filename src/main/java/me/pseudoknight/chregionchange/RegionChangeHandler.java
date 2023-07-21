@@ -50,7 +50,7 @@ public class RegionChangeHandler extends Handler {
 	@Override
 	public boolean onCrossBoundary(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType) {
 		if(entered.size() > 0 || exited.size() > 0) {
-			RegionChangeEvent event = new RegionChangeEvent.RegionChangeEventImpl(
+			RegionChangeBindableEvent event = new RegionChangeBindableEvent(
 					BukkitAdapter.adapt(player), exited, entered, BukkitAdapter.adapt(from), BukkitAdapter.adapt(to), moveType);
 			EventUtils.TriggerListener(Driver.EXTENSION, "region_change", event);
 			return !moveType.isCancellable() || !event.isCancelled();
