@@ -88,18 +88,22 @@ public class RegionChangeEvents {
 
 		@Override
 		public void preExecution(Environment env, BoundEvent.ActiveEvent activeEvent) {
-			if(activeEvent.getUnderlyingEvent() instanceof RegionChangeEventImpl) {
-				// sometimes the player is not online here (e.g. respawn events)
-				MCPlayer player = ((RegionChangeEventImpl) activeEvent.getUnderlyingEvent()).getPlayer();
-				Static.InjectPlayer(player);
+			if(activeEvent.getUnderlyingEvent() instanceof RegionChangeBindableEvent bindableEvent) {
+				if(bindableEvent.getMoveType() == MoveType.RESPAWN) {
+					// sometimes the player is not online here (e.g. respawn events)
+					MCPlayer player = bindableEvent.getPlayer();
+					Static.InjectPlayer(player);
+				}
 			}
 		}
 
 		@Override
 		public void postExecution(Environment env, BoundEvent.ActiveEvent activeEvent) {
-			if(activeEvent.getUnderlyingEvent() instanceof RegionChangeEventImpl) {
-				MCPlayer player = ((RegionChangeEventImpl) activeEvent.getUnderlyingEvent()).getPlayer();
-				Static.UninjectPlayer(player);
+			if(activeEvent.getUnderlyingEvent() instanceof RegionChangeBindableEvent bindableEvent) {
+				if(bindableEvent.getMoveType() == MoveType.RESPAWN) {
+					MCPlayer player = bindableEvent.getPlayer();
+					Static.UninjectPlayer(player);
+				}
 			}
 		}
 	}
