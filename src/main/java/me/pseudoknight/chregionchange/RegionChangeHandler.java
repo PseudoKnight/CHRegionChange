@@ -18,7 +18,6 @@ import com.sk89q.worldguard.session.handler.Handler;
 import org.bukkit.Bukkit;
 
 import java.util.Set;
-import java.util.logging.Level;
 
 public class RegionChangeHandler extends Handler {
 
@@ -31,7 +30,7 @@ public class RegionChangeHandler extends Handler {
 					WorldGuardPlatform wg = WorldGuard.getInstance().getPlatform();
 					registered = wg.getSessionManager().registerHandler(new RegionChangeHandler.Factory(), ExitFlag.FACTORY);
 				} catch (NullPointerException ex) {
-					Static.getLogger().log(Level.SEVERE, "Failed to register WorldGuard handler. WG hasn't enabled yet?");
+					Static.getLogger().severe("Failed to register WorldGuard handler. WG hasn't enabled yet?");
 				}
 			});
 		}
