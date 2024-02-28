@@ -2,8 +2,8 @@
 Provides a `region_change` event for CommandHelper when using WorldGuard.
 
 ## Downloads and Compatibility
-[CHRegionChange 2.2.0](https://letsbuild.net/jenkins/job/CHRegionChange/lastSuccessfulBuild/) for CommandHelper 3.3.5  
-[CHRegionChange 2.1.1](https://letsbuild.net/jenkins/job/CHRegionChange/28/) for CommandHelper 3.3.4  
+CHRegionChange 2.2.0 for CommandHelper 3.3.5  
+CHRegionChange 2.1.1 for CommandHelper 3.3.4  
 CHRegionChange 1.1.0 for CommandHelper 3.3.2
 
 ## Event Documentation
